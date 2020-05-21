@@ -1,6 +1,8 @@
+{{- if not contains "enterprise" .Values.imageTag}}
 # This service is intended for clients running in kubernetes to connect to the
 # cluster replica set.  This distinguishes it from discovery-lb which is about 
 # cluster formation and internal communication.
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -28,3 +30,5 @@ spec:
     app.kubernetes.io/name: {{ template "neo4j.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     app.kubernetes.io/component: replica
+
+{{- end }}

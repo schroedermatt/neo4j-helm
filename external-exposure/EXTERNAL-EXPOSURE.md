@@ -44,7 +44,7 @@ Given a deployment in a particular namespace, you end up with the following host
 * `<deployment>-neo4j-core-2.<deployment>-neo4j.<namespace>.svc.cluster.local`
 
 The helm chart in this repo can take a configurable ConfigMap for setting env vars on these pods.  So
-we can define our own configuration and pass it to the StatefulSet on startup.   The `custom-core-configmap.yml`
+we can define our own configuration and pass it to the StatefulSet on startup.   **The** `custom-core-configmap.yml`
 file in this directory is an example of that.
 
 ### Create Static IP addresses for inbound cluster traffic

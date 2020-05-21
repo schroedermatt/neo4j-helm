@@ -2,17 +2,51 @@
 
 # Neo4j-Helm
 
-This repository contains a Helm chart that starts Neo4j >= 4.0 Enterprise Edition clusters in Kubernetes.
+This repository contains a Helm chart that starts Neo4j >= 4.0 clusters in Kubernetes.
 
-## Quick Start
+## Quick Start - Enterprise Edition
+
+This repo is primarily used to deploy the Enterprise Edition of Neo4j. However, if you would like to deploy the Community Edition for testing please see the next section, [Quick Start - Community Edition](#quick-start---community-edition).
 
 Check the [releases page](https://github.com/neo4j-contrib/neo4j-helm/releases) and copy the URL of the tgz package.
 
 ```bash
-$ helm install mygraph RELEASE_URL --set acceptLicenseAgreement=yes --set neo4jPassword=mySecretPassword
+$ helm install mygraph RELEASE_URL \
+  --set acceptLicenseAgreement=yes \
+  --set neo4jPassword=mySecretPassword
 ```
 
-When you're done:  `helm uninstall mygraph`.
+When you're done:  `helm delete mygraph`.
+
+## Quick Start - Community Edition
+
+The Community Edition is a good starting point for testing Neo4j functionality. However, it lacks many of the expected features of enterprise software. For a better understanding of what the EE version offers, [see here.](https://neo4j.com/business-edge/whats-in-neo4j-enterprise-edition/)
+
+The important pieces of the below command to enable the community version are -
+  
+* set `imageTag` to a non enterprise version (`4.0.4` instead of `4.0.4-enterprise`)
+* set `core.numberOfServers` to 1 since Community Edition cannot support any more than that
+* set `readReplicas.numberOfServers` to 0 since Community Edition does not support read replicas
+* update `core.persistentVolume.size` to whatever makes sense for your use case
+
+When the helm charts are installed, many of the Enterprise features are wrapped in a `{{- if not contains "enterprise" .Values.imageTag}}` check so that things like read replicas are not instantiated for the Community Edition since they are not supported.
+
+```bash
+# if helm hasn't been init'd you'll see an error about Tiller not being found. In this case, run -
+$ helm init
+
+# this must be run from the root directory (hence the `.`) of this repository
+$ helm install . \
+  --name communityneo \
+  --set imageTag=4.0.4 \
+  --set core.numberOfServers=1 \
+  --set core.persistentVolume.size=2Gi \
+  --set readReplicas.numberOfServers=0 \
+  --set acceptLicenseAgreement=no \
+  --set neo4jPassword=mySecretPassword
+```
+
+When you're done:  `helm delete communityneo`.
 
 ## Documentation
 

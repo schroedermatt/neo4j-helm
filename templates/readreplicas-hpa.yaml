@@ -1,3 +1,4 @@
+{{- if not contains "enterprise" .Values.imageTag}}
 {{- if .Values.readReplica.autoscaling.enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
@@ -20,4 +21,5 @@ spec:
     resource:
       name: cpu
       targetAverageUtilization: {{ .Values.readReplica.autoscaling.targetAverageUtilization }}
+{{- end }}
 {{- end }}
